@@ -167,7 +167,7 @@ Protect `production`:
 Protect the `master` and `dev` branches (require PRs and the `CI` checks).
 
 Notes:
-- PRs from forks and Dependabot PRs do not receive environment secrets, so
+- PRs from forks do not receive environment secrets, so
   their `dbt build` job fails at the variable check; the offline checks still run.
 - `cleanup-pr.yml` can also be run manually with a PR number to remove
   leftover `PR_<n>_*` schemas.

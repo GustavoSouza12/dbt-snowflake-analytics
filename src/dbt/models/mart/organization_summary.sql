@@ -1,23 +1,16 @@
 -- One row per organization. 'complete' = 'completed'; amounts <= 0 not summed.
-
 WITH organizations AS (
-
     SELECT * FROM {{ ref('stg_organizations') }}
-
 ),
 
 orders AS (
-
     SELECT
         *,
         status IN ('completed', 'complete') AS is_completed
     FROM {{ ref('int_orders_latest') }}
-
 ),
 
--- Aggregate before joining to avoid duplicates.
 order_metrics AS (
-
     SELECT
         organization_id,
         COUNT(*)                                                    AS number_of_orders,
@@ -28,7 +21,6 @@ order_metrics AS (
     FROM orders
     WHERE organization_id IS NOT NULL
     GROUP BY organization_id
-
 ),
 
 org_summary_final AS (
@@ -43,7 +35,6 @@ org_summary_final AS (
     FROM organizations AS o
     LEFT JOIN order_metrics AS m
         ON o.organization_id = m.organization_id
-
 )
 
 SELECT * FROM org_summary_final

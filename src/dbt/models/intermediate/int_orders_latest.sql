@@ -16,13 +16,7 @@ ranked AS (
             PARTITION BY order_id
             ORDER BY
                 updated_at DESC,
-                CASE status
-                    WHEN 'cancelled' THEN 4
-                    WHEN 'completed' THEN 3
-                    WHEN 'approved'  THEN 2
-                    WHEN 'pending'   THEN 1
-                    ELSE 0
-                END DESC
+                {{ order_status_stage('status') }} DESC
         ) AS version_rank
     FROM orders
 
