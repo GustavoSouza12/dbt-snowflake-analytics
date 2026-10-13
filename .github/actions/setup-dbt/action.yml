@@ -33,7 +33,7 @@ runs:
         for name in DBT_TARGET SNOWFLAKE_ACCOUNT SNOWFLAKE_USER SNOWFLAKE_ROLE \
                     SNOWFLAKE_DATABASE SNOWFLAKE_WAREHOUSE SNOWFLAKE_PRIVATE_KEY_PASSPHRASE; do
           if [ -z "${!name}" ]; then
-            echo "::error::$name is empty. Configure it in the GitHub environment used by this job."
+            echo "::error::$name is empty. Add it to the GitHub environment used by this job (as a variable or a secret) and start a NEW run."
             missing=1
           fi
         done

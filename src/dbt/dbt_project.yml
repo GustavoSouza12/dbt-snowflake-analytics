@@ -14,9 +14,9 @@ clean-targets:
 
 models:
   snowflake_analytics:
-    raw:
+    staging:
       +materialized: table
-      +schema: RAW
+      +schema: STAGING
     intermediate:
       +materialized: table
       +schema: INTERMEDIATE
@@ -24,9 +24,9 @@ models:
       +materialized: table
       +schema: MART
 
-# Seeds are the landed source data. Every column is loaded as text so the raw
-# layer keeps exactly what the source sent (bad timestamps, empty amounts,
-# unexpected statuses); typing and validation happen in the models.
+# Seeds are the landed source data (RAW schema). Every column is loaded as
+# text so RAW keeps exactly what the source sent (bad timestamps, empty
+# amounts, unexpected statuses); typing happens in the staging models.
 seeds:
   snowflake_analytics:
     +schema: RAW

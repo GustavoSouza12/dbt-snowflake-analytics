@@ -13,7 +13,7 @@ scripts/
 src/dbt/
   profiles.yml                 Connection profile: env_var() lookups only
   seeds/                       Source data landed into RAW (all columns as text)
-  models/raw|intermediate|mart Model layers -> RAW / INTERMEDIATE / MART schemas
+  models/staging|intermediate|mart  Model layers -> STAGING / INTERMEDIATE / MART
   tests/                       Singular data tests
   macros/                      Schema naming and PR schema cleanup
 .github/
@@ -39,6 +39,15 @@ CI fails if the seed and the JSON drift apart.
 All seed columns are loaded as `VARCHAR` on purpose: the RAW layer keeps what
 the source sent, and casting/validation is done in the models.
 
+### Layers
+
+| Schema | Contents |
+|---|---|
+| `RAW` | Seeds only: source data exactly as received (text) |
+| `STAGING` | `stg_*` models: typed and standardized, 1:1 with the source |
+| `INTERMEDIATE` | `int_*` models: business rules, deduplication, joins |
+| `MART` | Final, consumer-facing tables |
+
 ## Environments
 
 | | dev | prod |
@@ -47,7 +56,7 @@ the source sent, and casting/validation is done in the models.
 | Warehouse | `DBT_DEV_WH` | `DBT_PROD_WH` |
 | Role / user | `DBT_DEV_ROLE` / `DBT_DEV_USER` | `DBT_PROD_ROLE` / `DBT_PROD_USER` |
 | Key pair | dev key | separate prod key |
-| Schemas | `RAW`, `INTERMEDIATE`, `MART`, plus `PR_<n>_*` | `RAW`, `INTERMEDIATE`, `MART` only |
+| Schemas | `RAW`, `STAGING`, `INTERMEDIATE`, `MART`, plus `PR_<n>_*` | `RAW`, `STAGING`, `INTERMEDIATE`, `MART` only |
 | Written by | local dev, PR builds, pushes to `dev` | pushes to `master` |
 
 Separation is enforced by Snowflake, not only by convention: the dev role has
@@ -145,10 +154,10 @@ value that is missing would silently fall back to them.
 | `SNOWFLAKE_ACCOUNT` | secret | account identifier | account identifier |
 | `SNOWFLAKE_PRIVATE_KEY` | secret | dev private key (full PEM) | prod private key (full PEM) |
 | `SNOWFLAKE_PRIVATE_KEY_PASSPHRASE` | secret | dev passphrase | prod passphrase |
-| `SNOWFLAKE_USER` | variable | `DBT_DEV_USER` | `DBT_PROD_USER` |
-| `SNOWFLAKE_ROLE` | variable | `DBT_DEV_ROLE` | `DBT_PROD_ROLE` |
-| `SNOWFLAKE_DATABASE` | variable | `ANALYTICS_DEV` | `ANALYTICS_PROD` |
-| `SNOWFLAKE_WAREHOUSE` | variable | `DBT_DEV_WH` | `DBT_PROD_WH` |
+| `SNOWFLAKE_USER` | variable (or secret) | `DBT_DEV_USER` | `DBT_PROD_USER` |
+| `SNOWFLAKE_ROLE` | variable (or secret) | `DBT_DEV_ROLE` | `DBT_PROD_ROLE` |
+| `SNOWFLAKE_DATABASE` | variable (or secret) | `ANALYTICS_DEV` | `ANALYTICS_PROD` |
+| `SNOWFLAKE_WAREHOUSE` | variable (or secret) | `DBT_DEV_WH` | `DBT_PROD_WH` |
 
 Protect `production`:
 - **Deployment branches:** selected branches → `master` only. Without this, a
