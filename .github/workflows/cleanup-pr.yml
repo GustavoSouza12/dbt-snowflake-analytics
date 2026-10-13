@@ -40,7 +40,7 @@ jobs:
     steps:
       # Run the base branch's code, never the PR's: it is trusted and still
       # exists after the PR closes.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.base.ref || github.ref }}
 

@@ -32,7 +32,7 @@ jobs:
       SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE || secrets.SNOWFLAKE_DATABASE }}
       SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE || secrets.SNOWFLAKE_WAREHOUSE }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-dbt
         with:

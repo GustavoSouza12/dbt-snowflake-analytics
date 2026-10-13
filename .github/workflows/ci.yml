@@ -35,7 +35,7 @@ jobs:
       SNOWFLAKE_PRIVATE_KEY_PATH: /dev/null
       SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: offline
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
@@ -71,7 +71,7 @@ jobs:
       SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE || secrets.SNOWFLAKE_DATABASE }}
       SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE || secrets.SNOWFLAKE_WAREHOUSE }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-dbt
         with:
