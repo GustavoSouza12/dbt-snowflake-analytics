@@ -43,7 +43,7 @@ the source sent, and casting/validation is done in the models.
 
 | | dev | prod |
 |---|---|---|
-| Database | `DBT_DEV_DB` | `DBT_PROD_DB` |
+| Database | `ANALYTICS_DEV` | `ANALYTICS_PROD` |
 | Warehouse | `DBT_DEV_WH` | `DBT_PROD_WH` |
 | Role / user | `DBT_DEV_ROLE` / `DBT_DEV_USER` | `DBT_PROD_ROLE` / `DBT_PROD_USER` |
 | Key pair | dev key | separate prod key |
@@ -124,10 +124,10 @@ feature/* --PR--> dev --PR--> master
 
 | Event | Workflow | Writes to |
 |---|---|---|
-| PR into `dev` or `master` | `ci.yml` | `DBT_DEV_DB.PR_<n>_*` |
-| Push to `dev` (merged PR) | `ci.yml` | `DBT_DEV_DB` shared schemas |
-| PR closed | `cleanup-pr.yml` | drops `DBT_DEV_DB.PR_<n>_*` |
-| Push to `master` / manual | `cd.yml` | `DBT_PROD_DB` (after approval) |
+| PR into `dev` or `master` | `ci.yml` | `ANALYTICS_DEV.PR_<n>_*` |
+| Push to `dev` (merged PR) | `ci.yml` | `ANALYTICS_DEV` shared schemas |
+| PR closed | `cleanup-pr.yml` | drops `ANALYTICS_DEV.PR_<n>_*` |
+| Push to `master` / manual | `cd.yml` | `ANALYTICS_PROD` (after approval) |
 
 Every CI run first does offline checks (`dbt parse`, seed/JSON sync) without
 credentials, then `dbt build`. dbt artifacts (`manifest.json`,
@@ -147,7 +147,7 @@ value that is missing would silently fall back to them.
 | `SNOWFLAKE_PRIVATE_KEY_PASSPHRASE` | secret | dev passphrase | prod passphrase |
 | `SNOWFLAKE_USER` | variable | `DBT_DEV_USER` | `DBT_PROD_USER` |
 | `SNOWFLAKE_ROLE` | variable | `DBT_DEV_ROLE` | `DBT_PROD_ROLE` |
-| `SNOWFLAKE_DATABASE` | variable | `DBT_DEV_DB` | `DBT_PROD_DB` |
+| `SNOWFLAKE_DATABASE` | variable | `ANALYTICS_DEV` | `ANALYTICS_PROD` |
 | `SNOWFLAKE_WAREHOUSE` | variable | `DBT_DEV_WH` | `DBT_PROD_WH` |
 
 Protect `production`:
