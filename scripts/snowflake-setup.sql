@@ -128,6 +128,11 @@ GRANT SELECT ON FUTURE VIEWS  IN SCHEMA ANALYTICS_PROD.MART TO ROLE ANALYTICS_RE
 -- -----------------------------------------------------------------------------
 -- 4. Verification (read-only)
 -- -----------------------------------------------------------------------------
+-- SECURITYADMIN can grant on any object (MANAGE GRANTS) but has no USAGE on
+-- the databases, so it cannot resolve schema names in SHOW ... IN SCHEMA.
+USE ROLE ACCOUNTADMIN;
+
+SHOW DATABASES LIKE 'ANALYTICS_%';  -- owner should be SYSADMIN
 SHOW GRANTS TO ROLE DBT_DEV_ROLE;
 SHOW GRANTS TO ROLE DBT_PROD_ROLE;
 SHOW GRANTS TO ROLE ANALYTICS_READER;
