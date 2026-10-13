@@ -1,0 +1,3 @@
+# Linux container and CI: keep LF everywhere, regardless of core.autocrlf.
+* text=auto eol=lf
+*.p8 binary

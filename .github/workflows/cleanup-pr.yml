@@ -1,0 +1,54 @@
+name: Clean up PR schemas
+
+# Drops the PR_<number>_* schemas a pull request build created in the dev
+# database once the PR is closed or merged. Never touches shared dev schemas
+# or prod (see src/dbt/macros/drop_pr_schemas.sql for the guards).
+on:
+  pull_request:
+    types: [closed]
+    branches: [dev, master]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number whose PR_<number>_* schemas should be dropped
+        required: true
+        type: number
+
+permissions:
+  contents: read
+
+concurrency:
+  # Same group as the PR's CI build, so cleanup waits for a running build.
+  group: dbt-pr-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  drop-schemas:
+    name: Drop PR schemas (dev)
+    runs-on: ubuntu-latest
+    environment: development
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+      DBT_PROFILES_DIR: ${{ github.workspace }}/src/dbt
+      DBT_TARGET: dev
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}
+      SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
+      SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+    steps:
+      # Run the base branch's code, never the PR's: it is trusted and still
+      # exists after the PR closes.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref || github.ref }}
+
+      - uses: ./.github/actions/setup-dbt
+        with:
+          private-key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: Drop PR schemas
+        working-directory: src/dbt
+        run: |
+          dbt run-operation drop_pr_schemas --target dev --args "{pr_number: ${PR_NUMBER}}"

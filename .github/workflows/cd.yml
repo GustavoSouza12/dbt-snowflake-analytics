@@ -1,0 +1,57 @@
+name: CD
+
+# Production build. Runs after a push to master (normally a merged dev -> master
+# PR) or manually. The production environment must be restricted to the master
+# branch and should require a reviewer; see README.md.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dbt-prod
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: dbt build (prod)
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DBT_PROFILES_DIR: ${{ github.workspace }}/src/dbt
+      DBT_TARGET: prod
+      DBT_SCHEMA_PREFIX: ""
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}
+      SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
+      SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-dbt
+        with:
+          private-key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: dbt build
+        working-directory: src/dbt
+        run: |
+          echo "Building ${SNOWFLAKE_DATABASE} (prod)"
+          dbt build --target prod
+
+      - name: Upload dbt artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-artifacts-prod-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            src/dbt/target/manifest.json
+            src/dbt/target/run_results.json
+            src/dbt/logs/dbt.log
+          if-no-files-found: ignore
+          retention-days: 30

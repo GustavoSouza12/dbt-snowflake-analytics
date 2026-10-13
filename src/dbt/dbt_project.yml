@@ -1,0 +1,56 @@
+name: 'snowflake_analytics'
+version: '1.0.0'
+config-version: 2
+profile: 'snowflake_analytics'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - target
+  - dbt_packages
+
+models:
+  snowflake_analytics:
+    raw:
+      +materialized: table
+      +schema: RAW
+    intermediate:
+      +materialized: table
+      +schema: INTERMEDIATE
+    mart:
+      +materialized: table
+      +schema: MART
+
+# Seeds are the landed source data. Every column is loaded as text so the raw
+# layer keeps exactly what the source sent (bad timestamps, empty amounts,
+# unexpected statuses); typing and validation happen in the models.
+seeds:
+  snowflake_analytics:
+    +schema: RAW
+    +quote_columns: false
+    organizations:
+      +column_types:
+        id: varchar
+        name: varchar
+        created_at: varchar
+    orders:
+      +column_types:
+        order_id: varchar
+        organization_id: varchar
+        status: varchar
+        amount: varchar
+        created_at: varchar
+        updated_at: varchar
+    order_events:
+      +column_types:
+        event_id: varchar
+        order_id: varchar
+        event_type: varchar
+        created_at: varchar
+    order_details:
+      +column_types:
+        record_number: number
+        payload: varchar

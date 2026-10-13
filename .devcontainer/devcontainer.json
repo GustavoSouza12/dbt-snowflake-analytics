@@ -1,0 +1,35 @@
+{
+	"name": "dbt Snowflake Analytics",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	// The host folder ~/.snowflake-keys (or %USERPROFILE%\.snowflake-keys on
+	// Windows) must exist and contain snowflake_key.p8 (the DEV user's key).
+	// It is mounted read-only; the key never enters the image or the repo.
+	"mounts": [
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.snowflake-keys,target=/run/secrets/snowflake,type=bind,readonly"
+	],
+	"containerEnv": {
+		"DBT_PROFILES_DIR": "${containerWorkspaceFolder}/src/dbt",
+		"DBT_TARGET": "dev",
+		"SNOWFLAKE_ACCOUNT": "${localEnv:SNOWFLAKE_ACCOUNT}",
+		"SNOWFLAKE_USER": "DBT_DEV_USER",
+		"SNOWFLAKE_ROLE": "DBT_DEV_ROLE",
+		"SNOWFLAKE_DATABASE": "DBT_DEV_DB",
+		"SNOWFLAKE_WAREHOUSE": "DBT_DEV_WH",
+		"SNOWFLAKE_PRIVATE_KEY_PATH": "/run/secrets/snowflake/snowflake_key.p8",
+		"SNOWFLAKE_PRIVATE_KEY_PASSPHRASE": "${localEnv:SNOWFLAKE_PRIVATE_KEY_PASSPHRASE}",
+		"DBT_SCHEMA_PREFIX": "${localEnv:DBT_SCHEMA_PREFIX}"
+	},
+	"postCreateCommand": "cd src/dbt && dbt deps",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"redhat.vscode-yaml"
+			]
+		}
+	}
+}

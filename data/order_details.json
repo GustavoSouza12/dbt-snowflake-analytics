@@ -1,0 +1,163 @@
+[
+  {
+    "order_id": 1001,
+    "organization_id": 1,
+    "investor": {"investor_id": "INV-001", "name": "John Smith", "type": "individual"},
+    "product": {"product_id": "PROD-101", "product_name": "Growth Equity Fund I", "asset_class": "Private Equity"},
+    "investment": {"amount": 10000, "currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-01T09:00:00"},
+      {"status": "approved", "timestamp": "2026-07-01T10:30:00"},
+      {"status": "completed", "timestamp": "2026-07-01T12:00:00"}
+    ],
+    "nav": {
+      "current_nav": 10450.25,
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-06-30", "nav": 10120.50},
+        {"date": "2026-07-31", "nav": 10450.25}
+      ]
+    },
+    "submitted_at": "2026-07-01T09:00:00"
+  },
+  {
+    "order_id": 1002,
+    "organization_id": 1,
+    "investor": {"investor_id": "INV-002", "name": "Sarah Johnson", "type": "trust"},
+    "product": {"product_id": "PROD-102", "product_name": "Private Credit Opportunities II", "asset_class": "Private Credit"},
+    "investment": {"amount": 25000, "currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-03T13:00:00"},
+      {"status": "completed", "timestamp": "2026-07-04T09:15:00"}
+    ],
+    "nav": {
+      "current_nav": 25780.10,
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-06-30", "nav": 25150.00},
+        {"date": "2026-07-31", "nav": 25780.10}
+      ]
+    },
+    "submitted_at": "2026-07-03T13:00:00"
+  },
+  {
+    "order_id": 1004,
+    "organization_id": 2,
+    "investor": {"investor_id": "INV-003", "name": "Michael Brown", "type": "individual"},
+    "product": {"product_id": "PROD-103", "product_name": "Real Estate Income Fund", "asset_class": "Real Estate"},
+    "investment": {"amount": 40000, "currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-06T10:00:00"},
+      {"status": "completed", "timestamp": "2026-07-07T11:00:00"},
+      {"status": "cancelled", "timestamp": "2026-07-08T09:00:00"}
+    ],
+    "nav": {
+      "current_nav": 0,
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-06-30", "nav": 39800.00},
+        {"date": "2026-07-07", "nav": 40500.00},
+        {"date": "2026-07-31", "nav": 0}
+      ]
+    },
+    "submitted_at": "2026-07-06T10:00:00"
+  },
+  {
+    "order_id": 1006,
+    "organization_id": 3,
+    "investor": {"investor_id": "INV-004", "name": "Emily Davis", "type": "llc"},
+    "product": {"product_id": "PROD-101", "product_name": "Growth Equity Fund I", "asset_class": "Private Equity"},
+    "investment": {"amount": 30000, "currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-09T09:20:00"},
+      {"status": "approved", "timestamp": "2026-07-10T10:00:00"},
+      {"status": "completed", "timestamp": "2026-07-10T16:00:00"}
+    ],
+    "nav": {
+      "current_nav": 31520.75,
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-06-30", "nav": 30200.00},
+        {"date": "2026-07-31", "nav": 31520.75}
+      ]
+    },
+    "submitted_at": "2026-07-09T09:20:00"
+  },
+  {
+    "order_id": 1009,
+    "organization_id": 5,
+    "investor": {"investor_id": "INV-005", "name": "Robert Wilson", "type": "trust"},
+    "product": {"product_id": "PROD-104", "product_name": "Infrastructure Partners III", "asset_class": "Infrastructure"},
+    "investment": {"amount": 50000, "currency": "USD"},
+    "status_history": [
+      {"status": "completed", "timestamp": "2026-08-01T08:00:00"},
+      {"status": "created", "timestamp": "2026-06-15T09:00:00"},
+      {"status": "approved", "timestamp": "2026-06-15T12:00:00"}
+    ],
+    "nav": {
+      "current_nav": 52650.40,
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-07-31", "nav": 52650.40},
+        {"date": "2026-06-30", "nav": 50800.00}
+      ]
+    },
+    "submitted_at": "2026-06-15T09:00:00"
+  },
+  {
+    "order_id": 1012,
+    "organization_id": 6,
+    "investor": {"investor_id": "INV-006", "name": "Amanda Taylor", "type": "individual"},
+    "product": {"product_id": "PROD-105", "product_name": "Venture Opportunities Fund", "asset_class": "Venture Capital"},
+    "investment": {"currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-17T10:00:00"},
+      {"status": "completed", "timestamp": "2026-07-17T12:00:00"}
+    ],
+    "nav": {"current_nav": null, "as_of_date": "2026-07-31", "history": []},
+    "submitted_at": "2026-07-17T10:00:00"
+  },
+  {
+    "order_id": 1013,
+    "organization_id": 7,
+    "investor": {"investor_id": "INV-007", "name": "Daniel Martinez", "type": "llc"},
+    "product": {"product_id": "PROD-102", "product_name": "Private Credit Opportunities II", "asset_class": "Private Credit"},
+    "investment": {"amount": 27000, "currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-18T08:00:00"},
+      {"status": "approved", "timestamp": "2026-07-18T10:00:00"},
+      {"status": "completed", "timestamp": "2026-07-18T12:00:00"}
+    ],
+    "nav": {
+      "current_nav": "28110.35",
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-06-30", "nav": 27250.00},
+        {"date": "2026-07-31", "nav": "28110.35"}
+      ]
+    },
+    "submitted_at": "2026-07-18T08:00:00"
+  },
+  {
+    "order_id": 1015,
+    "organization_id": 8,
+    "investor": {"investor_id": "INV-008", "name": "Laura Anderson", "type": "individual"},
+    "product": {"product_id": "PROD-103", "product_name": "Real Estate Income Fund", "asset_class": "Real Estate"},
+    "investment": {"amount": 45000, "currency": "USD"},
+    "status_history": [
+      {"status": "created", "timestamp": "2026-07-21T10:00:00"},
+      {"status": "completed", "timestamp": "2026-07-21T14:00:00"},
+      {"status": "completed", "timestamp": "2026-07-21T14:00:00"}
+    ],
+    "nav": {
+      "current_nav": 46125.00,
+      "as_of_date": "2026-07-31",
+      "history": [
+        {"date": "2026-05-31", "nav": 44800.00},
+        {"date": "2026-06-30", "nav": 45400.00},
+        {"date": "2026-07-31", "nav": 46125.00}
+      ]
+    },
+    "submitted_at": "2026-07-21T10:00:00"
+  }
+]
