@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: organization_summary
+    description: "???"
+    columns:
+      - name: organization_id    
+        description: "Organization identifier; unique in this model."
+        data_tests:
+          - not_null
+          - unique
+  - name: order_reconciliation
+    description: "???"
+    columns:
+      - name: order_id
+        description: "Order identifier; unique in this model."
+        data_tests:
+          - not_null
+          - unique   

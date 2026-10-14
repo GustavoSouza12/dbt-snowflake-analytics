@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: int_order_details
+    description: "int order details"
+    columns:
+      - name: order_id 
+        description: "teste"
+        data_tests:
+          - not_null
+          - unique
+  - name: int_orders_latest
+    description: ""
+    columns: 
+      - name: order_id
+        description: ""
+        data_tests:
+          - unique  
+          - not_null  
+    
+    
