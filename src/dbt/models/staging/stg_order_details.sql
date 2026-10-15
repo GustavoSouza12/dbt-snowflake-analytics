@@ -1,14 +1,15 @@
--- One row per JSON document. TRY_* everywhere: one malformed record becomes
--- NULLs (caught by tests) instead of failing the whole load.
+-- One row per JSON document, read from the VARIANT loaded natively by
+-- load_order_details. TRY_* casts: one bad value becomes NULL (caught by tests)
+-- instead of failing the whole model.
 
 WITH source AS (
-    SELECT * FROM {{ ref('order_details') }}
+    SELECT * FROM {{ source('raw', 'order_details') }}
 ),
 
 parsed AS (
     SELECT
-        record_number,
-        TRY_PARSE_JSON(payload) AS j
+        _file_row AS record_number,
+        payload   AS j
     FROM source
 )
 

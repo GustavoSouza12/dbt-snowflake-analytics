@@ -9,13 +9,12 @@ builds in throwaway schemas and a gated production deployment.
 data/order_details.json        Original semi-structured source (JSON array)
 scripts/
   snowflake-setup.sql          One-time, idempotent Snowflake provisioning
-  build_order_details_seed.py  Lands the JSON as a seed (one document per row)
 src/dbt/
   profiles.yml                 Connection profile: env_var() lookups only
   seeds/                       Source data landed into RAW (all columns as text)
   models/staging|intermediate|mart  Model layers -> STAGING / INTERMEDIATE / MART
   tests/                       Singular data tests
-  macros/                      Schema naming and PR schema cleanup
+  macros/                      Schema naming, PR schema cleanup, JSON load
 .github/
   actions/setup-dbt/           Shared CI setup (Python, dbt, key file)
   workflows/ci.yml             PR + dev builds
@@ -25,16 +24,18 @@ src/dbt/
 
 ### Source data
 
-The CSV seeds are the original source files. `order_details.csv` is generated
-from `data/order_details.json`; each JSON array element becomes one `payload`
-row, copied verbatim so types and number literals reach Snowflake untouched
-(parse it with `PARSE_JSON(payload)`). After editing the JSON, regenerate:
+The CSV seeds are the original source files. The JSON is loaded natively by
+Snowflake, without conversion: [`load_order_details`](src/dbt/macros/load_order_details.sql)
+uploads `data/order_details.json` to an internal stage (`PUT`) and copies it
+into `RAW.ORDER_DETAILS` as `VARIANT` (`COPY INTO`, one row per array element
+via `STRIP_OUTER_ARRAY`), with `_file`, `_file_row` and `_loaded_at` metadata.
+It is declared as a dbt source and is idempotent: `COPY` skips files it has
+already loaded, so reruns never duplicate rows.
 
 ```sh
-python scripts/build_order_details_seed.py
+cd src/dbt
+dbt run-operation load_order_details   # load the JSON (CI/CD do this before dbt build)
 ```
-
-CI fails if the seed and the JSON drift apart.
 
 All seed columns are loaded as `VARCHAR` on purpose: the RAW layer keeps what
 the source sent, and casting/validation is done in the models.
@@ -43,7 +44,7 @@ the source sent, and casting/validation is done in the models.
 
 | Schema | Contents |
 |---|---|
-| `RAW` | Seeds only: source data exactly as received (text) |
+| `RAW` | Seeds and the natively loaded JSON: source data exactly as received |
 | `STAGING` | `stg_*` models: typed and standardized, 1:1 with the source |
 | `INTERMEDIATE` | `int_*` models: business rules, deduplication, joins |
 | `MART` | Final, consumer-facing tables |
@@ -115,7 +116,8 @@ set -a; . ./.env; set +a
 ```sh
 cd src/dbt
 dbt debug                  # check the connection
-dbt seed                   # load source data into RAW
+dbt seed                   # load the CSV sources into RAW
+dbt run-operation load_order_details   # load the JSON into RAW
 dbt build                  # seeds + models + tests
 dbt build -s +my_model     # one model and its parents
 ```
@@ -138,8 +140,8 @@ feature/* --PR--> dev --PR--> master
 | PR closed | `cleanup-pr.yml` | drops `ANALYTICS_DEV.PR_<n>_*` |
 | Push to `master` / manual | `cd.yml` | `ANALYTICS_PROD` (after approval) |
 
-Every CI run first does offline checks (`dbt parse`, seed/JSON sync) without
-credentials, then `dbt build`. dbt artifacts (`manifest.json`,
+Every CI run first does offline checks (`dbt parse`) without credentials,
+then loads the JSON and runs `dbt build`. dbt artifacts (`manifest.json`,
 `run_results.json`, log) are uploaded for each build.
 
 ### GitHub configuration
