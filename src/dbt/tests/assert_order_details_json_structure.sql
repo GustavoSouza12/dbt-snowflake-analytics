@@ -6,9 +6,9 @@
 
 WITH documents AS (
     SELECT
-        record_number,
-        TRY_PARSE_JSON(payload) AS doc
-    FROM {{ ref('order_details') }}
+        _file_row AS record_number,
+        payload   AS doc
+    FROM {{ source('raw', 'order_details') }}
 ),
 
 nav_history_types AS (
@@ -25,7 +25,7 @@ checks AS (
         d.record_number,
         d.doc:order_id::VARCHAR AS order_id,
         ARRAY_CONSTRUCT_COMPACT(
-            IFF(d.doc IS NULL, 'invalid JSON', NULL),
+            IFF(TYPEOF(d.doc) <> 'OBJECT', 'document is not a JSON object', NULL),
             IFF(d.doc:investor.investor_id::VARCHAR IS NULL, 'missing investor.investor_id', NULL),
             IFF(d.doc:product.product_id::VARCHAR IS NULL, 'missing product.product_id', NULL),
             IFF(d.doc:investment.amount::VARCHAR IS NULL, 'missing investment.amount', NULL),

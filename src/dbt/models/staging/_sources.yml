@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw data loaded natively into Snowflake (see macros/load_order_details.sql)."
+    database: "{{ target.database }}"
+    schema: "{{ env_var('DBT_SCHEMA_PREFIX', '') | upper }}RAW"
+    tables:
+      - name: order_details
+        description: "One row per order document from data/order_details.json, as VARIANT."
+        columns:
+          - name: payload
+            description: "Order document exactly as received."
+          - name: _file
+            description: "Staged file the row was loaded from."
+          - name: _file_row
+            description: "Position of the document in the source file."
+          - name: _loaded_at
+            description: "When the row was loaded."

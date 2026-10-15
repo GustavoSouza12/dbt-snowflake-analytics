@@ -38,6 +38,10 @@ jobs:
         with:
           private-key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
 
+      - name: Load raw JSON
+        working-directory: src/dbt
+        run: dbt run-operation load_order_details --target prod
+
       - name: dbt build
         working-directory: src/dbt
         run: |

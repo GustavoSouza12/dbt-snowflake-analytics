@@ -50,7 +50,3 @@ seeds:
         order_id: varchar
         event_type: varchar
         created_at: varchar
-    order_details:
-      +column_types:
-        record_number: number
-        payload: varchar
