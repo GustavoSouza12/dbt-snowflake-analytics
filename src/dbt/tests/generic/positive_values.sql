@@ -1,3 +1,5 @@
+{# Fails on zero or negative values. #}
+
 {% test positive_values(model, column_name) %}
 
 SELECT {{ column_name }}

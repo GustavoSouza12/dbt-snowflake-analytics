@@ -1,12 +1,5 @@
-{#
-    Drop the PR_<number>_* schemas a pull request build created in the dev
-    database. Used by .github/workflows/cleanup-pr.yml when a PR closes.
+{# Drops the schemas of a closed pull request in dev. #}
 
-        dbt run-operation drop_pr_schemas --args '{pr_number: 123}'
-
-    Guards: dev target only, numeric PR number, exact prefix match (no LIKE
-    wildcards, so PR_1_ never matches PR_12_).
-#}
 {% macro drop_pr_schemas(pr_number) %}
     {% if target.name != 'dev' %}
         {{ exceptions.raise_compiler_error("drop_pr_schemas only runs against the dev target, not " ~ target.name) }}
