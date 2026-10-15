@@ -1,4 +1,5 @@
--- One row per organization. 'complete' = 'completed'; amounts <= 0 not summed.
+-- One row per organization. 'complete' = 'completed'; amounts <= 0 or missing are
+-- not summed and are counted in orders_with_invalid_amount.
 WITH organizations AS (
     SELECT * FROM {{ ref('stg_organizations') }}
 ),
@@ -16,6 +17,7 @@ order_metrics AS (
         COUNT(*)                                                    AS number_of_orders,
         COUNT_IF(is_completed)                                      AS completed_orders,
         SUM(CASE WHEN is_completed AND amount > 0 THEN amount END)  AS completed_order_amount,
+        COUNT_IF(is_completed AND (amount IS NULL OR amount <= 0))  AS orders_with_invalid_amount,
         MAX(created_at)                                             AS latest_order_at,
         MAX(CASE WHEN is_completed THEN updated_at END)             AS latest_completed_order_at
     FROM orders
@@ -30,6 +32,7 @@ org_summary_final AS (
         COALESCE(m.number_of_orders, 0)           AS number_of_orders,
         COALESCE(m.completed_orders, 0)           AS completed_orders,
         COALESCE(m.completed_order_amount, 0)     AS completed_order_amount,
+        COALESCE(m.orders_with_invalid_amount, 0) AS orders_with_invalid_amount,
         m.latest_order_at,
         m.latest_completed_order_at
     FROM organizations AS o

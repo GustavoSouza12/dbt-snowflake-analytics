@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: ""
+    columns: 
+      - name: order_id
+        description: "teste"
+        data_tests:
+          - not_null
+      - name: organization_id
+        description: "organization id"
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - null_ratio_above:
+              arguments:
+                max_ratio: 0.04
+          - relationships:
+              arguments:
+                to: ref('stg_organizations')
+                field: organization_id
+              config:
+                severity: warn
+      - name: status
+        description: ""
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['pending', 'approved', 'completed', 'cancelled']
+              config:
+                severity: warn
+      - name: amount
+        description: ""
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - positive_values:
+              config:
+                severity: warn
+  - name: stg_order_events
+    description: ""
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_orders_latest')
+                field: order_id
+              config:
+                severity: "warn"
+
+
+
+
+
