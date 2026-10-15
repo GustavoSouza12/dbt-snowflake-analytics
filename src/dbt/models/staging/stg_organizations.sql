@@ -14,5 +14,3 @@ typed AS (
 )
 
 SELECT * FROM typed
-
- 

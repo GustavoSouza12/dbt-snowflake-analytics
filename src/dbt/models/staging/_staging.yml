@@ -31,6 +31,19 @@ models:
                 values: ['pending', 'approved', 'completed', 'cancelled']
               config:
                 severity: warn
+  - name: stg_order_events
+    description: ""
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_orders_latest')
+                field: order_id
+              config:
+                severity: "warn"
+
 
 
 
