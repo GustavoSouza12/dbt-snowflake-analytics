@@ -48,9 +48,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: JSON seed is in sync with data/order_details.json
-        run: python scripts/build_order_details_seed.py --check
-
       - name: dbt parse
         working-directory: src/dbt
         run: |
@@ -76,6 +73,10 @@ jobs:
       - uses: ./.github/actions/setup-dbt
         with:
           private-key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      - name: Load raw JSON
+        working-directory: src/dbt
+        run: dbt run-operation load_order_details --target dev
 
       - name: dbt build
         working-directory: src/dbt
