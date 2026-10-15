@@ -1,15 +1,10 @@
--- Latest version of each order: one row per order_id.
--- Latest = most recent updated_at; ties broken by lifecycle stage so the
--- result is deterministic. Exact duplicate rows (e.g. 1010) collapse to one.
+-- Latest version of each order.
 
 WITH orders AS (
-
     SELECT * FROM {{ ref('stg_orders') }}
-
 ),
 
 ranked AS (
-
     SELECT
         *,
         ROW_NUMBER() OVER (
@@ -19,7 +14,6 @@ ranked AS (
                 {{ order_status_stage('status') }} DESC
         ) AS version_rank
     FROM orders
-
 )
 
 SELECT * EXCLUDE (version_rank)

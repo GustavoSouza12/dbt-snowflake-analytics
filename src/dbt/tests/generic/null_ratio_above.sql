@@ -1,4 +1,5 @@
--- src/dbt/tests/generic/null_ratio_above.sql
+{# Fails when the share of nulls in a column is above max_ratio. #}
+
 {% test null_ratio_above(model, column_name, max_ratio) %}
 
 SELECT

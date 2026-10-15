@@ -6,7 +6,7 @@ I built this with dbt on Snowflake. The source files are loaded into `RAW`, type
 
 Model: [`organization_summary`](src/dbt/models/mart/organization_summary.sql)
 
-![Task 1 lineage](assets/task1_summary.svg)
+![Task 1 lineage](assets/task1_summary.png)
 
 First I keep only the latest version of each order, using `ROW_NUMBER` ordered by `updated_at`. This also removes the duplicated order 1010. Then I aggregate the orders per organization and only after that join with the organizations, so the join is one to one and nothing gets counted twice. The join starts from organizations, so organization 9 shows up even without orders.
 
@@ -33,6 +33,8 @@ Assumptions:
 ## Task 2: JSON / Semi-Structured Data
 
 Models: [`int_order_details`](src/dbt/models/intermediate/int_order_details.sql) and [`order_reconciliation`](src/dbt/models/mart/order_reconciliation.sql)
+
+![Task 2 lineage](assets/task2_summary.png)
 
 The JSON is loaded into Snowflake as it is and parsed with SQL. The status history and NAV history are sorted by their dates instead of their position in the array, because in 1009 both arrays come out of order. I left `nav_change` empty for 1004, since a cancelled order isn't a loss.
 
@@ -140,6 +142,9 @@ The JSON is loaded by [`load_order_details`](src/dbt/macros/load_order_details.s
 
 <details>
 <summary>Environments, CI/CD and setup</summary>
+
+![Branching and deployment flow](assets/extra_CICD.png)
+
 
 | | dev | prod |
 |---|---|---|

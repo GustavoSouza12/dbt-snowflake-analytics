@@ -1,11 +1,5 @@
-{#
-    Load data/order_details.json into RAW.ORDER_DETAILS natively in Snowflake:
-    PUT the file to an internal stage, then COPY INTO a VARIANT table, one row
-    per array element (STRIP_OUTER_ARRAY). Idempotent: COPY skips files it has
-    already loaded, so reruns never duplicate rows.
+{# Loads the order details JSON into RAW with PUT and COPY INTO. #}
 
-        dbt run-operation load_order_details
-#}
 {% macro load_order_details(file_path='../../data/order_details.json') %}
 
     {% set database = target.database %}

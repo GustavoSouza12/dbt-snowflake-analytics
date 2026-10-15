@@ -1,3 +1,5 @@
+-- JSON documents with missing fields, wrong types or unexpected keys.
+
 {{ config(severity = 'warn') }}
 
 {% set expected_keys = "ARRAY_CONSTRUCT('order_id', 'organization_id', 'investor', 'product',
@@ -7,7 +9,7 @@
 WITH documents AS (
     SELECT
         _file_row AS record_number,
-        payload   AS doc
+        payload AS doc
     FROM {{ source('raw', 'order_details') }}
 ),
 
