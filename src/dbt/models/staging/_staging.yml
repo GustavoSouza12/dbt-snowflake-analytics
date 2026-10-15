@@ -31,6 +31,15 @@ models:
                 values: ['pending', 'approved', 'completed', 'cancelled']
               config:
                 severity: warn
+      - name: amount
+        description: ""
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - positive_values:
+              config:
+                severity: warn
   - name: stg_order_events
     description: ""
     columns:

@@ -55,7 +55,8 @@ order_details_final AS (
         d.current_nav,
         d.nav_as_of_date,
         p.nav                           AS previous_nav,
-        d.current_nav - p.nav           AS nav_change
+        -- Performance only applies to active positions: a cancellation is not a loss.
+        IFF(s.status = 'cancelled', NULL, d.current_nav - p.nav)    AS nav_change
     FROM details AS d
     LEFT JOIN latest_status AS s
         ON d.order_id = s.order_id
