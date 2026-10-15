@@ -1,3 +1,5 @@
+-- Orders updated before they were created.
+
 {{ config(severity = 'warn') }}
 
 SELECT

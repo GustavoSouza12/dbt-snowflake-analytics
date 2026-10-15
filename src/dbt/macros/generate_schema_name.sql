@@ -1,8 +1,5 @@
-{#
-    Schemas are the layer names (RAW, INTERMEDIATE, MART) without dbt's default
-    "<target_schema>_" concatenation. DBT_SCHEMA_PREFIX isolates a build, e.g.
-    PR_123_ for pull requests; it is refused on the prod target.
-#}
+{# Schema name for each layer, with an optional prefix for PR builds. #}
+
 {% macro generate_schema_name(custom_schema_name, node) -%}
     {%- set schema_prefix = env_var('DBT_SCHEMA_PREFIX', '') | trim | upper -%}
     {%- if schema_prefix -%}
