@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "metrics": {
+      "command": "python",
+      "args": ["mcp/metrics_server.py"]
+    }
+  }
+}
