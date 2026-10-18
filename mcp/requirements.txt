@@ -1,0 +1,3 @@
+-r ../requirements.txt
+dbt-metricflow==0.15.0
+mcp==2.3.0
