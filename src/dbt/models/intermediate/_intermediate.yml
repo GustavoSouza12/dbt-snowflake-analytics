@@ -2,20 +2,27 @@ version: 2
 
 models:
   - name: int_order_details
-    description: "int order details"
+    description: "One row per order from the JSON source, with investor, product, latest status and NAV change."
     columns:
-      - name: order_id 
-        description: "teste"
+      - name: order_id
+        description: "Order identifier. Unique in this model."
         data_tests:
           - not_null
           - unique
   - name: int_orders_latest
-    description: ""
-    columns: 
+    description: "Latest version of each order. One row per order_id."
+    columns:
       - name: order_id
-        description: ""
+        description: "Order identifier. Unique in this model."
         data_tests:
-          - unique  
-          - not_null  
-    
-    
+          - unique
+          - not_null
+  - name: metricflow_time_spine
+    description: "One row per day, used by MetricFlow for time-based metrics."
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        description: "Calendar day."
+        granularity: day
+

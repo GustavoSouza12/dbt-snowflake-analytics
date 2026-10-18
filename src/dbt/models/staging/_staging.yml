@@ -2,14 +2,14 @@ version: 2
 
 models:
   - name: stg_orders
-    description: ""
+    description: "Orders from the source with proper types. One row per order version, so an order_id can repeat."
     columns: 
       - name: order_id
-        description: "teste"
+        description: "Order identifier. Repeats once per version of the order."
         data_tests:
           - not_null
       - name: organization_id
-        description: "organization id"
+        description: "Organization that placed the order."
         data_tests:
           - not_null:
               config:
@@ -24,7 +24,7 @@ models:
               config:
                 severity: warn
       - name: status
-        description: ""
+        description: "Order status in this version: pending, approved, completed or cancelled."
         data_tests:
           - accepted_values:
               arguments:
@@ -32,7 +32,7 @@ models:
               config:
                 severity: warn
       - name: amount
-        description: ""
+        description: "Order amount in USD."
         data_tests:
           - not_null:
               config:
@@ -41,7 +41,7 @@ models:
               config:
                 severity: warn
   - name: stg_order_events
-    description: ""
+    description: "Order lifecycle events from the source. One row per event."
     columns:
       - name: order_id
         data_tests:
@@ -52,8 +52,3 @@ models:
                 field: order_id
               config:
                 severity: "warn"
-
-
-
-
-
