@@ -1,0 +1,95 @@
+version: 2
+
+semantic_models:
+  - name: orders
+    description: "One row per order, latest version."
+    model: ref('fct_orders')
+    defaults:
+      agg_time_dimension: created_at
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+      - name: organization
+        type: foreign
+        expr: organization_id
+    dimensions:
+      - name: status
+        type: categorical
+      - name: created_at
+        type: time
+        type_params:
+          time_granularity: day
+    measures:
+      - name: number_of_orders
+        description: "Number of orders."
+        agg: count_distinct
+        expr: order_id
+      - name: completed_order_amount
+        description: "Amount of completed orders, excluding missing or non-positive amounts."
+        agg: sum
+        expr: "CASE WHEN status = 'completed' AND amount > 0 THEN amount END"
+      - name: completed_orders
+        description: "Orders whose latest status is completed."
+        agg: sum
+        expr: "CASE WHEN status = 'completed' THEN 1 ELSE 0 END"
+
+  - name: organizations
+    description: "One row per organization."
+    model: ref('dim_organizations')
+    defaults:
+      agg_time_dimension: created_at
+    entities:
+      - name: organization
+        type: primary
+        expr: organization_id
+    dimensions:
+      - name: organization_name
+        type: categorical
+        description: "Organization name. Not unique (organizations 5 and 6 share a name), so group by organization as well."
+      - name: created_at
+        type: time
+        type_params:
+          time_granularity: day
+    measures:
+      - name: number_of_organizations
+        description: "Number of organizations."
+        agg: count_distinct
+        expr: organization_id
+
+metrics:
+  - name: number_of_orders
+    label: Number of orders
+    description: "Number of orders, counting only the latest version of each order."
+    type: simple
+    type_params:
+      measure: number_of_orders
+
+  - name: completed_orders
+    label: Completed orders
+    description: "Orders whose latest status is completed. A completed order that was later cancelled doesn't count."
+    type: simple
+    type_params:
+      measure: completed_orders
+
+  - name: completed_order_amount
+    label: Completed order amount
+    description: "Sum of completed orders, latest version only. Missing or non-positive amounts are left out."
+    type: simple
+    type_params:
+      measure: completed_order_amount
+
+  - name: completion_rate
+    label: Completion rate
+    description: "Share of orders whose latest status is completed."
+    type: ratio
+    type_params:
+      numerator: completed_orders
+      denominator: number_of_orders
+
+  - name: number_of_organizations
+    label: Number of organizations
+    description: "Number of organizations. Organization names are not unique, so this counts ids."
+    type: simple
+    type_params:
+      measure: number_of_organizations

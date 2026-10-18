@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: organization_summary
-    description: "???"
+    description: "One row per organization with order counts, completed amount and latest dates."
     columns:
       - name: organization_id    
         description: "Organization identifier; unique in this model."
@@ -10,7 +10,7 @@ models:
           - not_null
           - unique
   - name: order_reconciliation
-    description: "???"
+    description: "One row per order_id found in orders or in the JSON, with flags showing where they differ."
     columns:
       - name: order_id
         description: "Order identifier; unique in this model."
